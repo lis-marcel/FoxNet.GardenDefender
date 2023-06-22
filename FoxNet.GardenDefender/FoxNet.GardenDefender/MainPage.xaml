@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoxNet.GardenDefender.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Label Text="Select program:" />
+
+            <Label x:Name="errorLabel" TextColor="Red" TextDecorations="Underline" />
+            <Picker x:Name="programPicker" />
+
+            <Button 
+                x:Name="startButton"
+                Text="Start"
+                IsEnabled="True"
+                Clicked="RunSelected"
+                BackgroundColor="Green"
+                />
+
+            <Button 
+                x:Name="cancelButton"
+                IsEnabled="False"
+                Text="Cancel"
+                BackgroundColor="DarkGrey"
+                Clicked="Cancel"
+                />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
