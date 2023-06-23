@@ -10,14 +10,13 @@ namespace FoxNet.GardenDefender
     {
         private static System.Timers.Timer aTimer;
         private int Option;
+        private List<int> OptionList;
 
-        public void MatchProgram(Enum selectedProgram, IList<MainPage.ProgramsEnum> allPrograms)
+        public void MatchProgram(Enum selectedProgram, IList<MainPage.ProgramsEnum> allPrograms, List<int> parameters)
         {
             Option = 0;
-            aTimer = new System.Timers.Timer
-            {
-                Interval = 5000
-            };
+            aTimer = new System.Timers.Timer();
+            OptionList = parameters;
 
             foreach (var program in allPrograms)
             {
@@ -43,14 +42,19 @@ namespace FoxNet.GardenDefender
             switch (Option)
             {
                 case 0:
-                    secondsToVibrate = 2;
+                    aTimer.Interval = OptionList[0] * 1000;
+
+                    secondsToVibrate = OptionList[1];
                     vibrationLength = TimeSpan.FromSeconds(secondsToVibrate);
 
                     Vibration.Default.Vibrate(vibrationLength);
                     break;
 
                 case 1:
-                    secondsToVibrate = random.Next(1, 4);
+                    aTimer.Interval = OptionList[0] * 1000;
+                    int maxVibrationTime = OptionList[0];
+
+                    secondsToVibrate = random.Next(1, maxVibrationTime);
                     vibrationLength = TimeSpan.FromSeconds(secondsToVibrate);
 
                     Vibration.Default.Vibrate(vibrationLength);

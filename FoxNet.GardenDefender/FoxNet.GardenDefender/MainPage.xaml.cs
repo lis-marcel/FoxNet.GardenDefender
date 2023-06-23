@@ -1,10 +1,13 @@
 ﻿using FoxNet.GardenDefender.ProgramsOptions;
+using Microsoft.Maui.Graphics.Text;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace FoxNet.GardenDefender;
 
 public partial class MainPage : ContentPage
 {
-	VibrationPrograms vibrationPrograms = new VibrationPrograms();
+	private VibrationPrograms vibrationPrograms = new VibrationPrograms();
 
     #region Program types enum
     public enum ProgramsEnum
@@ -20,33 +23,10 @@ public partial class MainPage : ContentPage
 
         programPicker.ItemsSource = (System.Collections.IList)Enum.GetValues(typeof(ProgramsEnum)).Cast<ProgramsEnum>();
 
-        programPicker.SelectedIndexChanged += PickerSelectedIndexChanged;
+        programPicker.SelectedIndexChanged += ShowSelectedProgramOptions;
 
-        startButton.Clicked += LockStartAndUnlockCancelButton;
-    }
-
-    private void PickerSelectedIndexChanged(object sender, EventArgs e)
-    {
-        var selected = (ProgramsEnum)programPicker.SelectedItem;
-
-        if (selected == ProgramsEnum.Standard)
-        {
-            var standard = new Standard();
-            var standardContent = standard.GetContent();
-
-            AddContentToPage(standardContent);
-        }
-    }
-
-    void AddContentToPage(View content)
-    {
-        var existingContent  = Content as View;
-        var containerLayout = new StackLayout();
-
-        containerLayout.Children.Add(existingContent);
-        containerLayout.Children.Add(content);
-
-        Content = containerLayout;
+        startButton.Clicked += DisableStartButton;
+        startButton.Clicked += EnableCancelButton;
     }
 
 	public void RunSelected(object sender, EventArgs e)
@@ -54,9 +34,27 @@ public partial class MainPage : ContentPage
         if (programPicker != null)
 		{
             var selectedProgram = (ProgramsEnum)programPicker.SelectedItem;
+            var parametersList = GetParametersValues(selectedProgram);
 			ProgramsEnum[] allPrograms = (ProgramsEnum[])Enum.GetValues(typeof(ProgramsEnum));
 
-            vibrationPrograms.MatchProgram(selectedProgram, allPrograms);
+            vibrationPrograms.MatchProgram(selectedProgram, allPrograms, parametersList);
+        }
+    }
+
+    private void ShowSelectedProgramOptions(object sender, EventArgs e)
+    {
+        var selected = (ProgramsEnum)programPicker.SelectedItem;
+
+        if (selected == ProgramsEnum.Standard)
+        {
+            ShowStandardOptions();
+            HideRandomOptions();
+        }
+
+        if (selected == ProgramsEnum.Random)
+        {
+            HideStandardOptions();
+            ShowStandardOptions();
         }
     }
 
@@ -64,26 +62,121 @@ public partial class MainPage : ContentPage
 	{
         vibrationPrograms.CancelTimer();
 
-        UnlockStartAndLockCancelButton(sender, e);
+        DisableCancelButton(sender, e);
+        EnableStartButton(sender, e);
+    }
+
+    public bool ValidateParameter(string parameter)
+    {
+        if (int.TryParse(parameter, out int parsedParameter)) 
+        {
+            int min = 1;
+            int max = 50;
+
+            if (parsedParameter >= min && parsedParameter <= max)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private List<int> GetParametersValues(ProgramsEnum program)
+    {
+        var parametersList = new List<int>();
+
+        errorLabel.IsVisible = false;
+
+        if (program == ProgramsEnum.Standard)
+        {
+            var interval = standardInterval.Text;
+            var duration = vibrationDuration.Text;
+
+            if (ValidateParameter(interval) && ValidateParameter(duration))
+            {
+
+                var parsedInterval = int.Parse(interval);
+                var parsedDuration = int.Parse(duration);
+
+                parametersList.Add(parsedInterval);
+                parametersList.Add(parsedDuration);
+            }
+            
+            else
+            {
+                errorLabel.IsVisible = true;
+            }
+        }
+
+        if (program == ProgramsEnum.Random)
+        {
+            var interval = standardInterval.Text;
+            var duration = maxDuration.Text;
+
+            if (ValidateParameter(interval) && ValidateParameter(duration))
+            {
+                var parsedInterval = int.Parse(interval);
+                var parsedDuration = int.Parse(duration);
+
+                parametersList.Add(parsedInterval);
+                parametersList.Add(parsedDuration);
+            }
+
+            else
+            {
+                errorLabel.IsVisible = true;
+            }
+        }
+
+        return parametersList;
     }
 
     #region Locking and unlocking buttons functions
-    private void LockStartAndUnlockCancelButton(Object sender, EventArgs e)
+    private void EnableCancelButton(Object sender, EventArgs e)
     {
-        startButton.IsEnabled = false;
-        startButton.BackgroundColor = Color.Parse("DarkGrey");
-
         cancelButton.IsEnabled = true;
         cancelButton.BackgroundColor = Color.Parse("Red");
     }
 
-    private void UnlockStartAndLockCancelButton(Object sender, EventArgs e)
+    private void DisableStartButton(Object sender, EventArgs e)
+    {
+        startButton.IsEnabled = false;
+        startButton.BackgroundColor = Color.Parse("DarkGrey");
+    }
+
+    private void DisableCancelButton(Object sender, EventArgs e)
+    {
+        cancelButton.IsEnabled = false;
+        cancelButton.BackgroundColor = Color.Parse("DarkGrey");
+    }
+
+    private void EnableStartButton(Object sender, EventArgs e)
     {
         startButton.IsEnabled = true;
         startButton.BackgroundColor = Color.Parse("Green");
+    }
+    #endregion
 
-        cancelButton.IsEnabled = false;
-        cancelButton.BackgroundColor = Color.Parse("DarkGrey");
+    #region Showing and hiding programs options
+    private void ShowStandardOptions()
+    {
+        standardOptions.IsVisible = true;
+    }
+
+    private void ShowRandomOptions()
+    {
+        randomOptions.IsVisible = true;
+    }
+
+    private void HideStandardOptions()
+    {
+        standardOptions.IsVisible = false;
+    }
+
+    private void HideRandomOptions()
+    {
+        randomOptions.IsVisible = false;
     }
     #endregion
 }
