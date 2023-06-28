@@ -8,64 +8,61 @@ namespace FoxNet.GardenDefender
 {
     public class VibrationPrograms
     {
-        private static System.Timers.Timer aTimer;
-        private int Option;
-        private List<int> OptionList;
+        private static System.Timers.Timer ATimer { get; set; }
+        private int Option { get; set; }
+        private int SecondsToVibrate { get; set; }
 
-        public void MatchProgram(Enum selectedProgram, IList<MainPage.ProgramsEnum> allPrograms, List<int> parameters)
+        public void Run(Enum selectedProgram, IList<MainPage.ProgramsEnum> allPrograms, List<int> parameters)
         {
             Option = 0;
-            aTimer = new System.Timers.Timer();
-            OptionList = parameters;
+            ATimer = new()
+            {
+                Interval = parameters[0] * 1000,
+            };
+
+            SecondsToVibrate = parameters[1];
 
             foreach (var program in allPrograms)
             {
                 if (program.Equals(selectedProgram))
                 {
-                    aTimer.Elapsed += Scenarios;
+                    ATimer.Elapsed += Scenarios;
                     break;
                 }
 
                 Option++;
             }
 
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
+            ATimer.AutoReset = true;
+            ATimer.Enabled = true;
         }
 
-        private void Scenarios(Object source, System.Timers.ElapsedEventArgs e)
+        private void Scenarios(object source, System.Timers.ElapsedEventArgs e)
         {
             int secondsToVibrate;
             var random = new Random();
-            TimeSpan vibrationLength;
+            TimeSpan duration;
 
             switch (Option)
             {
                 case 0:
-                    aTimer.Interval = OptionList[0] * 1000;
+                    duration = TimeSpan.FromSeconds(SecondsToVibrate);
 
-                    secondsToVibrate = OptionList[1];
-                    vibrationLength = TimeSpan.FromSeconds(secondsToVibrate);
-
-                    Vibration.Default.Vibrate(vibrationLength);
+                    Vibration.Default.Vibrate(duration);
                     break;
 
                 case 1:
-                    aTimer.Interval = OptionList[0] * 1000;
-                    int maxVibrationTime = OptionList[0];
+                    secondsToVibrate = random.Next(1, SecondsToVibrate);
+                    duration = TimeSpan.FromSeconds(secondsToVibrate);
 
-                    secondsToVibrate = random.Next(1, maxVibrationTime);
-                    vibrationLength = TimeSpan.FromSeconds(secondsToVibrate);
-
-                    Vibration.Default.Vibrate(vibrationLength);
+                    Vibration.Default.Vibrate(duration);
                     break;
             }
         }
 
         public void CancelTimer()
         {
-            aTimer.Stop();
-            aTimer.Dispose();
+            ATimer = null;
         }
     }
 }

@@ -12,20 +12,12 @@
             <Label Text="Select program:" />
             <Picker x:Name="programPicker" Title="Program type"/>
 
-            <StackLayout x:Name="standardOptions" IsVisible="False">
-                <Label Text="Interval:" />
-                <Entry x:Name="standardInterval" MaxLength="2" Keyboard="Numeric" />
+            <StackLayout x:Name="options" IsVisible="False">
+                <Label x:Name="intervalLabel" />
+                <Entry x:Name="intervalEntry" MaxLength="2" Keyboard="Numeric" />
 
-                <Label Text="Seconds to vibrate:" />
-                <Entry x:Name="vibrationDuration" MaxLength="2" Keyboard="Numeric" />
-            </StackLayout>
-
-            <StackLayout x:Name="randomOptions" IsVisible="False">
-                <Label Text="Interval:" />
-                <Entry x:Name="randomInterval" MaxLength="2" Keyboard="Numeric" />
-                
-                <Label Text="Seconds to vibrate:" />
-                <Entry x:Name="maxDuration" MaxLength="2" Keyboard="Numeric" />
+                <Label x:Name="durationLabel" />
+                <Entry x:Name="durationEntry" MaxLength="2" Keyboard="Numeric" />
             </StackLayout>
 
             <Label x:Name="errorLabel" Text="Enter values from given ranges!" TextColor="Red" FontAttributes="Bold" IsVisible="False"/>
@@ -33,17 +25,17 @@
             <Button 
                 x:Name="startButton"
                 Text="Start"
-                IsEnabled="True"
-                Clicked="RunSelected"
-                BackgroundColor="Green"
+                IsEnabled="False"
+                Clicked="Start"
+                BackgroundColor="DarkGray"
             />
 
             <Button 
                 x:Name="cancelButton"
                 IsEnabled="False"
                 Text="Cancel"
-                BackgroundColor="DarkGrey"
                 Clicked="Cancel"
+                BackgroundColor="DarkGray"
             />
 
         </VerticalStackLayout>
