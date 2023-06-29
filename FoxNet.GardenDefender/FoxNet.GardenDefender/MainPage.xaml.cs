@@ -1,27 +1,12 @@
-﻿using FoxNet.GardenDefender.ProgramsOptions;
-using Microsoft.Maui.Graphics.Text;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-
-namespace FoxNet.GardenDefender;
+﻿namespace FoxNet.GardenDefender;
 
 public partial class MainPage : ContentPage
 {
-    private VibrationPrograms Program { get; set; }
-
-    #region Program types enum
-    public enum ProgramsEnum
-    {
-        Standard,
-        Random,
-    }
-    #endregion
-
     public MainPage()
     {
         InitializeComponent();
 
-        programPicker.ItemsSource = (System.Collections.IList)Enum.GetValues(typeof(ProgramsEnum)).Cast<ProgramsEnum>();
+        programPicker.ItemsSource = (System.Collections.IEnumerable)VibProgRegister.All.;
 
         programPicker.SelectedIndexChanged += ShowOptions;
 
@@ -43,22 +28,16 @@ public partial class MainPage : ContentPage
 
     public void Cancel(object sender, EventArgs e)
     {
-        Program.CancelTimer();
+        Program.Stop();
         LockCancelButton(sender, e);
     }
 
     public void RunSelected(object sender, EventArgs e)
     {
-        if (programPicker != null)
-        {
-            Program = new();
-
-            var selectedProgram = (ProgramsEnum)programPicker.SelectedItem;
-            var parametersList = GetParametersValues();
-            ProgramsEnum[] allPrograms = (ProgramsEnum[])Enum.GetValues(typeof(ProgramsEnum));
-
-            VibrationPrograms.Run(selectedProgram, allPrograms, parametersList);
-        }
+        var selectedProgram = (VibProgRegister)programPicker.SelectedItem;
+        var parametersList = GetParametersValues();
+        ProgramsEnum[] allPrograms = (ProgramsEnum[])Enum.GetValues(typeof(ProgramsEnum));
+        VibExecutor.Start();
     }
 
     public void ParameterChanged(object sender, TextChangedEventArgs e)
