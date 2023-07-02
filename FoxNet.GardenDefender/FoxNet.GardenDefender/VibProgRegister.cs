@@ -8,7 +8,7 @@
             new VibRandom(),
         };
 
-        public static IEnumerable<VibProg> All
+        public static IList<VibProg> All
         {
             get
             {

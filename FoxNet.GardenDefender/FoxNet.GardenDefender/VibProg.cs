@@ -13,5 +13,4 @@
         public abstract DateTime? NextRun();
         public abstract void MakeNoise();
     }
-
 }

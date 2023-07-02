@@ -2,16 +2,18 @@
 
 public partial class MainPage : ContentPage
 {
+    public IList<VibProg> VibProgList { get; set; }
+
     public MainPage()
     {
         InitializeComponent();
 
-        programPicker.ItemsSource = (System.Collections.IEnumerable)VibProgRegister.All.;
+        BindPicker();
 
-        programPicker.SelectedIndexChanged += ShowOptions;
+        //    programPicker.SelectedIndexChanged += ShowOptions;
 
-        intervalEntry.TextChanged += ParameterChanged;
-        durationEntry.TextChanged += ParameterChanged;
+        //    intervalEntry.TextChanged += ParameterChanged;
+        //    durationEntry.TextChanged += ParameterChanged;
 
         startButton.Clicked += Start;
 
@@ -21,23 +23,36 @@ public partial class MainPage : ContentPage
     public void Start(object sender, EventArgs e)
     {
         HideOptions(sender, e);
-        RunSelected(sender, e);
+        //RunSelected(sender, e);
         LockStartButton(sender, e);
         UnlockCancelButton(sender, e);
     }
 
     public void Cancel(object sender, EventArgs e)
     {
-        Program.Stop();
+        //Program.Stop();
         LockCancelButton(sender, e);
     }
 
-    public void RunSelected(object sender, EventArgs e)
+    /*public void RunSelected(object sender, EventArgs e)
     {
         var selectedProgram = (VibProgRegister)programPicker.SelectedItem;
         var parametersList = GetParametersValues();
         ProgramsEnum[] allPrograms = (ProgramsEnum[])Enum.GetValues(typeof(ProgramsEnum));
         VibExecutor.Start();
+    }*/
+
+    public void BindPicker()
+    {
+        VibProgList = VibProgRegister.All;
+
+        // Set the binding context to the current page
+        BindingContext = this;
+
+        // Set the binding properties for the Picker
+        programPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("VibProgList"));
+        programPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedPickerItem"));
+        programPicker.ItemDisplayBinding = new Binding("Name");
     }
 
     public void ParameterChanged(object sender, TextChangedEventArgs e)
@@ -126,18 +141,6 @@ public partial class MainPage : ContentPage
     #region Showing and hiding programs options
     private void ShowOptions(object sender, EventArgs e)
     {
-        /*switch (ProgramsEnum)
-        {
-            case Standard:
-                intervalLabel.Text = "Enter interval between vibrations: (min 1s, max 50s)";
-                durationLabel.Text = "Enter constant duration: (min 1s, max 50s)";
-                break;
-            case 0:
-                intervalLabel.Text = "Enter interval between vibrations: (min 1s, max 50s)";
-                durationLabel.Text = "Enter duration, this will be maximal duration of vibration: (min 1s, max 50s)";
-                break;
-        }*/
-
         options.IsVisible = true;
     }
 
