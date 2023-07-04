@@ -13,9 +13,8 @@
             <Picker x:Name="programPicker" Title="Program type"/>
 
             <StackLayout x:Name="options" IsVisible="False">
-                <Label x:Name="intervalLabel" />
-                <Entry x:Name="intervalEntry" MaxLength="2" Keyboard="Numeric" />
-
+                <Label x:Name="periodLabel" />
+                <Entry x:Name="periodEntry" MaxLength="2" Keyboard="Numeric" />
                 <Label x:Name="durationLabel" />
                 <Entry x:Name="durationEntry" MaxLength="2" Keyboard="Numeric" />
             </StackLayout>

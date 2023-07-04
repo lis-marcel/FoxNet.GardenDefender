@@ -8,7 +8,10 @@
         {
             VibProgType = VibProgType.RandomPeriodDuration;
             Name = "Random Period/Duration";
-            Description = "";
+            PeriodDescription = "Enter maximal interval in seconds between next vibrations.";
+            DurationDescription = "Enter maximal duration of vibrations, duration will be random from 1s to your given max.";
+            DurationMs = 2000;
+            PeriodMs = 5000;
         }
 
         // TODO: Marcel - min/max dla Period/Duration
@@ -37,11 +40,9 @@
 
         public override void MakeNoise()
         {
-            Thread.Sleep(DurationMs); // TODO: Marcel
+            Vibration.Default.Vibrate(DurationMs);
+
             lastRun = DateTime.Now;
         }
-
     }
-
-
 }

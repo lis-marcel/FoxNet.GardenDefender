@@ -3,6 +3,8 @@
 public partial class MainPage : ContentPage
 {
     public IList<VibProg> VibProgList { get; set; }
+    public VibProg SelectedProgram { get; set; }
+    public VibExecutor VibExecutor { get; set; }
 
     public MainPage()
     {
@@ -10,10 +12,10 @@ public partial class MainPage : ContentPage
 
         BindPicker();
 
-        //    programPicker.SelectedIndexChanged += ShowOptions;
+        periodEntry.TextChanged += ParameterChanged;
+        durationEntry.TextChanged += ParameterChanged;
 
-        //    intervalEntry.TextChanged += ParameterChanged;
-        //    durationEntry.TextChanged += ParameterChanged;
+        programPicker.SelectedIndexChanged += ProgramPickerChangedValue;
 
         startButton.Clicked += Start;
 
@@ -23,24 +25,21 @@ public partial class MainPage : ContentPage
     public void Start(object sender, EventArgs e)
     {
         HideOptions(sender, e);
-        //RunSelected(sender, e);
+
+        VibExecutor = new();
+        VibExecutor.Start(SelectedProgram);
+
         LockStartButton(sender, e);
         UnlockCancelButton(sender, e);
     }
 
     public void Cancel(object sender, EventArgs e)
     {
-        //Program.Stop();
+        VibExecutor.Stop();
+        VibExecutor.Dispose();
+
         LockCancelButton(sender, e);
     }
-
-    /*public void RunSelected(object sender, EventArgs e)
-    {
-        var selectedProgram = (VibProgRegister)programPicker.SelectedItem;
-        var parametersList = GetParametersValues();
-        ProgramsEnum[] allPrograms = (ProgramsEnum[])Enum.GetValues(typeof(ProgramsEnum));
-        VibExecutor.Start();
-    }*/
 
     public void BindPicker()
     {
@@ -51,27 +50,40 @@ public partial class MainPage : ContentPage
 
         // Set the binding properties for the Picker
         programPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("VibProgList"));
-        programPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedPickerItem"));
         programPicker.ItemDisplayBinding = new Binding("Name");
+    }
+
+    public void ProgramPickerChangedValue(object sender, EventArgs e)
+    {
+        SelectedProgram = (VibProg)programPicker.SelectedItem;
+
+        ShowOptions(sender, e);
+
+        int periodS = SelectedProgram.PeriodMs / 1000;
+        int durationS = SelectedProgram.DurationMs / 1000;
+
+        periodLabel.Text = SelectedProgram.PeriodDescription;
+        periodEntry.Text = periodS.ToString();
+
+        durationLabel.Text = SelectedProgram.DurationDescription;
+        durationEntry.Text = durationS.ToString();
     }
 
     public void ParameterChanged(object sender, TextChangedEventArgs e)
     {
-        var interval = intervalEntry.Text;
+        var period = periodEntry.Text;
         var duration = durationEntry.Text;
-        _ = int.TryParse(interval, out int _interval);
+        _ = int.TryParse(period, out int _period);
         _ = int.TryParse(duration, out int _duration);
 
-        List<int> paramsList = new()
-        {
-            _interval,
-            _duration
-        };
+        bool periodRes = ValidateParameter(_period);
+        bool durationRes = ValidateParameter(_duration);
 
-        var res = ValidateParameter(paramsList);
-
-        if (res)
+        if (periodRes && durationRes)
         {
+            SelectedProgram.PeriodMs = _period * 1000;
+            SelectedProgram.DurationMs = _duration * 1000;
+
             UnlockStartButton(sender, e);
         }
 
@@ -81,35 +93,15 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private bool ValidateParameter(List<int> paramsList)
+    private bool ValidateParameter(int param)
     {
         int min = 1;
-        int max = 50;
+        int max = 20;
 
-        foreach (int param in paramsList)
-        {
-            if (param > max || param < min) return false;
-        }
+        if (param > max || param < min) 
+            return false;
 
         return true;
-    }
-
-    private List<int> GetParametersValues()
-    {
-        var parametersList = new List<int>();
-
-        errorLabel.IsVisible = false;
-
-        var interval = intervalEntry.Text;
-        var duration = durationEntry.Text;
-
-        var parsedInterval = int.Parse(interval);
-        var parsedDuration = int.Parse(duration);
-
-        parametersList.Add(parsedInterval);
-        parametersList.Add(parsedDuration);
-
-        return parametersList;
     }
 
     #region Locking and unlocking buttons functions

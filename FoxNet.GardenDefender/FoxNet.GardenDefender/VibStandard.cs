@@ -8,7 +8,8 @@
         {
             VibProgType = VibProgType.Standard;
             Name = "Standrd";
-            Description = "";
+            PeriodDescription = "Enter interval in seconds between vibrations.";
+            DurationDescription = "Enter how long to vibrate, in seconds.";
             DurationMs = 2000;
             PeriodMs = 5000;
         }
@@ -27,7 +28,8 @@
         }
         public override void MakeNoise()
         {
-            Thread.Sleep(DurationMs); // TODO: Marcel
+            Vibration.Default.Vibrate(DurationMs);
+
             lastRun = DateTime.Now;
         }
     }

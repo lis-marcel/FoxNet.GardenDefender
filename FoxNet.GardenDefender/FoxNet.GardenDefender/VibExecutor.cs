@@ -5,7 +5,7 @@ namespace FoxNet.GardenDefender
     public class VibExecutor : IDisposable
     {
         private static System.Timers.Timer Timer { get; set; }
-        public VibProg CurrentVibProg { get; private set; }
+        public VibProg CurrentVibProg { get; set; }
 
         public void Dispose()
         {
