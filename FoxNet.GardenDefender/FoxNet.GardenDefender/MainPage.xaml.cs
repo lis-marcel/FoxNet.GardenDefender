@@ -1,10 +1,14 @@
-﻿namespace FoxNet.GardenDefender;
+﻿using FoxNet.GardenDefender.VibLogic;
+using FoxNet.GardenDefender.VibProgs;
+using System.ComponentModel;
+
+namespace FoxNet.GardenDefender;
 
 public partial class MainPage : ContentPage
 {
     public IList<VibProg> VibProgList { get; set; }
     public VibProg SelectedProgram { get; set; }
-    public VibExecutor VibExecutor { get; set; }
+    public static VibExecutor VibExecutor { get; set; }
 
     public MainPage()
     {
@@ -38,9 +42,14 @@ public partial class MainPage : ContentPage
         VibExecutor.Stop();
         VibExecutor.Dispose();
 
+        UnlockStartButton(sender, e);
+
+        ShowOptions(sender, e);
+
         LockCancelButton(sender, e);
     }
 
+    #region Picker functionalities
     public void BindPicker()
     {
         VibProgList = VibProgRegister.All;
@@ -68,7 +77,9 @@ public partial class MainPage : ContentPage
         durationLabel.Text = SelectedProgram.DurationDescription;
         durationEntry.Text = durationS.ToString();
     }
+    #endregion
 
+    #region Parameters handling
     public void ParameterChanged(object sender, TextChangedEventArgs e)
     {
         var period = periodEntry.Text;
@@ -103,6 +114,7 @@ public partial class MainPage : ContentPage
 
         return true;
     }
+    #endregion
 
     #region Locking and unlocking buttons functions
     private void UnlockCancelButton(object sender, EventArgs e)

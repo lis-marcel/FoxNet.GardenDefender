@@ -1,4 +1,4 @@
-﻿namespace FoxNet.GardenDefender
+﻿namespace FoxNet.GardenDefender.VibProgs
 {
     public class VibRandom : VibProg
     {

@@ -1,12 +1,16 @@
-﻿using System.Timers;
+﻿using System.ComponentModel;
+using System.Timers;
+using FoxNet.GardenDefender.VibProgs;
 
-namespace FoxNet.GardenDefender
+namespace FoxNet.GardenDefender.VibLogic
 {
-    public class VibExecutor : IDisposable
+    public partial class VibExecutor : IDisposable
     {
         private static System.Timers.Timer Timer { get; set; }
         public VibProg CurrentVibProg { get; set; }
-
+        public DateTime? NextRun { get; set; }
+         
+        public event PropertyChangedEventHandler PropertyChanged;
         public void Dispose()
         {
             Timer?.Dispose();
@@ -17,12 +21,13 @@ namespace FoxNet.GardenDefender
             if (vibProg == null)
                 throw new ArgumentException("vibProg can not be a null");
 
-            this.CurrentVibProg = vibProg;
+            CurrentVibProg = vibProg;
 
             vibProg.Init();
-            var when = vibProg.NextRun();
 
-            if (when.HasValue)
+            NextRun = vibProg.NextRun();
+
+            if (NextRun.HasValue)
             {
                 Timer = new()
                 {
@@ -30,8 +35,8 @@ namespace FoxNet.GardenDefender
                 };
 
                 Timer.Elapsed += TimerCallback;
-                
-                InitTimerForNextRun(when);
+
+                InitTimerForNextRun(NextRun);
             }
         }
 
@@ -49,7 +54,8 @@ namespace FoxNet.GardenDefender
         private void TimerCallback(object source, ElapsedEventArgs e)
         {
             CurrentVibProg.MakeNoise();
-            InitTimerForNextRun(CurrentVibProg.NextRun());
+            InitTimerForNextRun(CurrentVibProg.
+                NextRun());
         }
 
         public void Stop()

@@ -1,4 +1,6 @@
-﻿namespace FoxNet.GardenDefender
+﻿using FoxNet.GardenDefender.VibProgs;
+
+namespace FoxNet.GardenDefender.VibLogic
 {
     public static class VibProgRegister
     {
