@@ -9,6 +9,7 @@
         public string DurationDescription { get; set; }
         public int PeriodMs { get; set; }
         public int DurationMs { get; set; }
+        public DateTime? NextRunTime { get; set; }
 
         public abstract void Init();
         public abstract DateTime? NextRun();

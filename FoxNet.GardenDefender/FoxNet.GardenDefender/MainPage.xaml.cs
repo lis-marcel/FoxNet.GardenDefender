@@ -1,20 +1,20 @@
-﻿using FoxNet.GardenDefender.VibLogic;
-using FoxNet.GardenDefender.VibProgs;
+﻿using FoxNet.GardenDefender.VibProgs;
 using System.ComponentModel;
 
 namespace FoxNet.GardenDefender;
 
 public partial class MainPage : ContentPage
 {
-    public IList<VibProg> VibProgList { get; set; }
     public VibProg SelectedProgram { get; set; }
-    public static VibExecutor VibExecutor { get; set; }
+    public static ViewModel VibExecutorViewModel { get; set; }
 
     public MainPage()
     {
         InitializeComponent();
 
-        BindPicker();
+        VibExecutorViewModel = new();
+
+        BindingContext = VibExecutorViewModel;
 
         periodEntry.TextChanged += ParameterChanged;
         durationEntry.TextChanged += ParameterChanged;
@@ -30,8 +30,7 @@ public partial class MainPage : ContentPage
     {
         HideOptions(sender, e);
 
-        VibExecutor = new();
-        VibExecutor.Start(SelectedProgram);
+        VibExecutorViewModel.Start(SelectedProgram);
 
         LockStartButton(sender, e);
         UnlockCancelButton(sender, e);
@@ -39,8 +38,8 @@ public partial class MainPage : ContentPage
 
     public void Cancel(object sender, EventArgs e)
     {
-        VibExecutor.Stop();
-        VibExecutor.Dispose();
+        VibExecutorViewModel.Stop();
+        VibExecutorViewModel.Dispose();
 
         UnlockStartButton(sender, e);
 
@@ -50,18 +49,6 @@ public partial class MainPage : ContentPage
     }
 
     #region Picker functionalities
-    public void BindPicker()
-    {
-        VibProgList = VibProgRegister.All;
-
-        // Set the binding context to the current page
-        BindingContext = this;
-
-        // Set the binding properties for the Picker
-        programPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("VibProgList"));
-        programPicker.ItemDisplayBinding = new Binding("Name");
-    }
-
     public void ProgramPickerChangedValue(object sender, EventArgs e)
     {
         SelectedProgram = (VibProg)programPicker.SelectedItem;
@@ -104,12 +91,12 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private bool ValidateParameter(int param)
+    private static bool ValidateParameter(int param)
     {
         int min = 1;
         int max = 20;
 
-        if (param > max || param < min) 
+        if (param > max || param < min)
             return false;
 
         return true;

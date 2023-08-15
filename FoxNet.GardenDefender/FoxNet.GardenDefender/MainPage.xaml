@@ -1,42 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vms="clr-namespace:FoxNet.GardenDefender;assembly=FoxNet.GardenDefender"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="FoxNet.GardenDefender.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+    <ContentPage.BindingContext>
+        <vms:ViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="500"/>
+            </Grid.RowDefinitions>
 
-            <Label Text="Select program:" />
-            <Picker x:Name="programPicker" Title="Program type"/>
+            <VerticalStackLayout>
+                <StackLayout Grid.Row="0" Orientation="Vertical">
+                    <Picker ItemsSource="{Binding VibProgsList}"
+                        ItemDisplayBinding="{Binding Name}"
+                        x:Name="programPicker"/>
 
-            <StackLayout x:Name="options" IsVisible="False">
-                <Label x:Name="periodLabel" />
-                <Entry x:Name="periodEntry" MaxLength="2" Keyboard="Numeric" />
-                <Label x:Name="durationLabel" />
-                <Entry x:Name="durationEntry" MaxLength="2" Keyboard="Numeric" />
-            </StackLayout>
+                    <StackLayout x:Name="options" IsVisible="False">
+                        <Label x:Name="periodLabel" />
+                        <Entry x:Name="periodEntry" MaxLength="2" Keyboard="Numeric" />
+                        <Label x:Name="durationLabel" />
+                        <Entry x:Name="durationEntry" MaxLength="2" Keyboard="Numeric" />
+                    </StackLayout>
 
-            <Label x:Name="errorLabel" Text="Enter values from given ranges!" TextColor="Red" FontAttributes="Bold" IsVisible="False"/>
+                    <Button 
+                        x:Name="startButton"
+                        Text="Start"
+                        IsEnabled="False"
+                        Clicked="Start"
+                        BackgroundColor="DarkGray"
+                    />
 
-            <Button 
-                x:Name="startButton"
-                Text="Start"
-                IsEnabled="False"
-                Clicked="Start"
-                BackgroundColor="DarkGray"
-            />
+                    <Button 
+                        x:Name="cancelButton"
+                        IsEnabled="False"
+                        Text="Cancel"
+                        Clicked="Cancel"
+                        BackgroundColor="DarkGray"
+                    />
+                </StackLayout>
+            </VerticalStackLayout>
 
-            <Button 
-                x:Name="cancelButton"
-                IsEnabled="False"
-                Text="Cancel"
-                Clicked="Cancel"
-                BackgroundColor="DarkGray"
-            />
-
-        </VerticalStackLayout>
-    </ScrollView>
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Series}"></lvc:CartesianChart>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>

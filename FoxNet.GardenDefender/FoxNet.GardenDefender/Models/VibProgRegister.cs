@@ -1,6 +1,6 @@
 ﻿using FoxNet.GardenDefender.VibProgs;
 
-namespace FoxNet.GardenDefender.VibLogic
+namespace FoxNet.GardenDefender
 {
     public static class VibProgRegister
     {

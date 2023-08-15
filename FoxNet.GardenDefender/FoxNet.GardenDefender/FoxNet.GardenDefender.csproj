@@ -49,9 +49,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="LiveChartsCore" Version="2.0.0-beta.911" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-beta.911" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-beta.911" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.4-preview.89" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.4-preview.89" />
+		<PackageReference Include="Uno.GalaSoft.MvvmLight" Version="5.4.0-uno.138" />
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionFoxNetGardenDefenderHideInfoBar="True" /></VisualStudio></ProjectExtensions>
